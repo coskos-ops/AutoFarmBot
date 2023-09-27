@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.plantstatus.PlantstatusFragment">
+
+    <TableLayout
+        android:id="@+id/table"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#FFFFFF"
+        android:divider="@android:drawable/divider_horizontal_bright"
+        android:showDividers="middle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:clickable="false"
+            android:gravity="center|left">
+
+            <TextView
+                android:layout_width="292dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/alatsi"
+                android:padding="10sp"
+                android:text="@string/EC"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="126dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:fontFamily="@font/alatsi"
+                android:padding="10sp"
+                android:text="@string/EC_value"
+                android:textSize="24sp" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="false"
+            android:divider="@android:drawable/divider_horizontal_textfield"
+            android:gravity="center|left"
+            android:rotation="0">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="292dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:fontFamily="@font/alatsi"
+                android:padding="10sp"
+                android:text="@string/pH"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="126dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:fontFamily="@font/alatsi"
+                android:padding="10sp"
+                android:text="@string/pH_value"
+                android:textSize="24sp" />
+        </TableRow>
+
+    </TableLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

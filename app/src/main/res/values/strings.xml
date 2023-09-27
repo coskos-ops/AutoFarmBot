@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">AutoFarmBot</string>
+    <string name="title_home">Home</string>
+    <string name="title_plantstatus">Plant status</string>
+    <string name="title_livefeed">Live feed</string>
+    <string name="pH">pH:</string>
+    <string name="EC">EC (mS/cm):</string>
+    <string name="illuminance">Illuminance</string>
+    <string name="EC_value">0.0</string>
+    <string name="pH_value">0.0</string>
+
+</resources>
