@@ -9,6 +9,9 @@ import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.autofarmbot.plant.Plant;
+import com.autofarmbot.plant.PlantStatus;
+import com.autofarmbot.plant.Position;
 import com.autofarmbot.ui.plantstatus.PlantstatusFragment;
 
 import org.junit.Rule;
@@ -47,13 +50,18 @@ public class PlantStatusTest {
             Thread.sleep(300);
         }
 
-
-
-
-
-
-        //PlantstatusFragment.changePHValue(5);
+        Plant P1 = new Plant("P1", Position.plantPositions.get("P1"), PlantStatus.GROWING);
+        runOnUI(() -> {PlantstatusFragment.changePlantStatus(P1);});
         Thread.sleep(1000);
+
+        P1.setStatus(PlantStatus.RIPE);
+        runOnUI(() -> {PlantstatusFragment.changePlantStatus(P1);});
+        Thread.sleep(1000);
+
+        P1.setStatus(PlantStatus.EMPTY);
+        runOnUI(() -> {PlantstatusFragment.changePlantStatus(P1);});
+        Thread.sleep(1000);
+
 
     }
 
