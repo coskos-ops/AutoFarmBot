@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">AutoFarmBot</string>
+    <string name="app_name">Welcome to HydroBot!</string>
     <string name="title_home">Home</string>
-    <string name="title_plantstatus">Plant status</string>
-    <string name="title_livefeed">Live feed</string>
+    <string name="title_plantstatus">Plant Status</string>
+    <string name="title_livefeed">Live Feed</string>
     <string name="pH">pH:</string>
     <string name="EC">EC (mS/cm):</string>
     <string name="illuminance">Illuminance</string>
@@ -20,6 +20,10 @@
 
 
     <string name="Harvest">Harvest</string>
+
+    <string name="camera_1">Camera 1</string>
+    <string name="camera_2">Camera 2</string>
+    <string name="camera_3">Camera 3</string>
 
 
 
