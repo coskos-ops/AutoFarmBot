@@ -1,8 +1,10 @@
 package com.autofarmbot;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
+import com.autofarmbot.server.Server;
 import com.autofarmbot.ui.plantstatus.PlantstatusFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -23,8 +25,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
+        Server.startConnection();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 

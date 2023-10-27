@@ -50,6 +50,13 @@ public class PlantStatusTest {
             Thread.sleep(300);
         }
 
+        for(int i = 0; i < 10; i++) {
+            int finalI = i;
+            runOnUI(() -> {PlantstatusFragment.changeDistanceValue(finalI);});
+            Thread.sleep(300);
+        }
+
+
         Plant P1 = new Plant("P1", Position.plantPositions.get("P1"), PlantStatus.GROWING);
         runOnUI(() -> {PlantstatusFragment.changePlantStatus(P1);});
         Thread.sleep(1000);

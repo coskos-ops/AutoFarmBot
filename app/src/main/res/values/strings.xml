@@ -5,9 +5,11 @@
     <string name="title_livefeed">Live Feed</string>
     <string name="pH">pH:</string>
     <string name="EC">EC (mS/cm):</string>
+    <string name="Distance">Distance (cm):</string>
     <string name="illuminance">Illuminance</string>
     <string name="EC_value">0.0</string>
     <string name="pH_value">0.0</string>
+    <string name="Distance_value">0</string>
     <string name="P1">Plant 1</string>
     <string name="P2">Plant 2</string>
     <string name="P3">Plant 3</string>

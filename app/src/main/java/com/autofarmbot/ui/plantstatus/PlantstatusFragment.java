@@ -91,6 +91,21 @@ public class PlantstatusFragment extends Fragment {
 
     }
 
+
+    /**
+     * Changes the distance Value
+     * @param newValue the new distanceValue
+     */
+    @SuppressLint("SetTextI18n")
+    public static void changeDistanceValue(int newValue) {
+        String strValue = String.format("%d", newValue);
+        TextView distanceValue = binding.distanceValue;
+        distanceValue.setText(strValue);
+
+
+    }
+
+
     /**
      * Changes the EC value displayed on the screen. The value will be green if it is within
      * the acceptable value defined in the specifications [ECMINBOUND - ECMAXBOUND].
