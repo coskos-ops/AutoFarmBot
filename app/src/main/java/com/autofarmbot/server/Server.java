@@ -12,7 +12,7 @@ import java.net.URLConnection;
 
 public class Server {
 
-    static String apiURL = "http://coskos.pythonanywhere.com/getDistance";
+    static String apiURL = "http://coskos.pythonanywhere.com/getSensors";
 
     public static void startConnection() {
 
@@ -22,8 +22,12 @@ public class Server {
                     try {
                         String result = getHTML(apiURL);
                         JSONObject obj = new JSONObject(result);
-                        String v = (String) obj.get("distance");
-                        PlantstatusFragment.changeDistanceValue(Integer.valueOf(v));
+                        Integer distance = (Integer) obj.get("distance");
+                        Double pH = (Double) obj.get("pH");
+                        Double ec = (Double) obj.get("ec");
+                        PlantstatusFragment.changeDistanceValue(distance);
+                        PlantstatusFragment.changePHValue(pH);
+                        PlantstatusFragment.changeECValue(ec);
                         Thread.sleep(500);
                     } catch (Exception e) {
                         System.out.println(e);
