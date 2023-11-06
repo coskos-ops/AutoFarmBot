@@ -1,3 +1,6 @@
+#wifi ssid & passwords
+HardwareSystem/WiFiCredentials.h
+
 # Compiled class file
 *.class
 
