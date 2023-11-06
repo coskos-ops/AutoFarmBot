@@ -78,7 +78,7 @@ public class PlantstatusFragment extends Fragment {
      * @param newValue the new pH value
      */
     @SuppressLint("SetTextI18n")
-    public static void changePHValue(float newValue) {
+    public static void changePHValue(Double newValue) {
         String strValue = String.format("%.2f", newValue);
         TextView phValue = binding.pHValue;
         phValue.setText(strValue);
@@ -112,7 +112,7 @@ public class PlantstatusFragment extends Fragment {
      * @param newValue the new EC value
      */
     @SuppressLint("SetTextI18n")
-    public static void changeECValue(float newValue) {
+    public static void changeECValue(Double newValue) {
         String strValue = String.format("%.2f", newValue);
         TextView ecValue = binding.ECvalue;
         binding.ECvalue.setText(strValue);
