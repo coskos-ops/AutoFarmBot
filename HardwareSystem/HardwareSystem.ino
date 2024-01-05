@@ -1,4 +1,5 @@
 #include "SR04.h"
+#include "WiFiCredentials.h"
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
@@ -15,8 +16,8 @@ const int TEMP_PIN = 35;
 SR04 sr04 = SR04(ECHO_PIN,TRIG_PIN);
 
 //DEFINE NETWORK
-const char* ssid = "BELL123";
-const char* password = "21EA45AA79AE";
+const char* ssid = (const char*) MY_SSID;
+const char* password = (const char*) MY_PASSWORD;
 String serverName = "https://coskos.pythonanywhere.com/postSensors";
 
 void setup() {
