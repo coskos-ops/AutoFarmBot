@@ -55,6 +55,17 @@ public class PlantstatusFragment extends Fragment {
      */
     private static final float PHMAXBOUND = 7;
 
+    /**
+     * Minimum acceptable distance value (inclusive)
+     */
+    private static final int DISTMINBOUND = 40;
+
+    /**
+     * Maximum acceptable distance value (inclusive)
+     */
+    private static final int DISTMAXBOUND = 66;
+
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         PlantstatusViewModel plantstatusViewModel =
@@ -101,6 +112,12 @@ public class PlantstatusFragment extends Fragment {
         String strValue = String.format("%d", newValue);
         TextView distanceValue = binding.distanceValue;
         distanceValue.setText(strValue);
+        if(newValue < DISTMINBOUND || newValue > DISTMAXBOUND) {
+            distanceValue.setTextColor(RED);
+        }
+        else {
+            distanceValue.setTextColor(GREEN);
+        }
 
 
     }

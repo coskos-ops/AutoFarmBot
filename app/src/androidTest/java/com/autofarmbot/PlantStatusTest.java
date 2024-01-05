@@ -40,13 +40,13 @@ public class PlantStatusTest {
 
         for(int i = 1; i < 10; i++) {
             int finalI = i;
-            runOnUI(() -> {PlantstatusFragment.changePHValue(finalI);});
+            runOnUI(() -> {PlantstatusFragment.changePHValue((double) finalI);});
             Thread.sleep(300);
         }
 
         for(float f = 1.0F; f < 2; f += 0.1) {
             float finalF = f;
-            runOnUI(() -> {PlantstatusFragment.changeECValue(finalF);});
+            runOnUI(() -> {PlantstatusFragment.changeECValue((double) finalF);});
             Thread.sleep(300);
         }
 

@@ -8,6 +8,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -24,7 +26,7 @@ import com.autofarmbot.databinding.FragmentLivefeedBinding;
 public class LivefeedFragment extends Fragment {
 
     private FragmentLivefeedBinding binding;
-    private VideoView videoView;
+    private WebView webView;
 
     /**
      * @param inflater           The LayoutInflater object that can be used to inflate
@@ -47,15 +49,15 @@ public class LivefeedFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_livefeed, container, false);
 
-        // Initialize the VideoView
-        videoView = view.findViewById(R.id.video_view);
+        // Initialize the WebView
+        webView = view.findViewById(R.id.webview);
 
-        // Set the path to the video file (assuming it's named "sample.mp4" in the res/raw folder)
-        String videoPath = "android.resource://" + getActivity().getPackageName() + "/" + R.raw.img_7474;
-        videoView.setVideoURI(Uri.parse(videoPath));
+        // Enable JavaScript (if needed)
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
 
-        // Start playing the video
-        videoView.start();
+        // Load a URL (e.g., Google's homepage)
+        webView.loadUrl("https://coskos.pythonanywhere.com/");
 
         return view;
     }
@@ -72,48 +74,7 @@ public class LivefeedFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
-    /**
-     * @param menu     The options menu in which you place your items.
-     * @param inflater
-     */
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.live_feed_menu, menu); //initiate menu for camera switch
-        super.onCreateOptionsMenu(menu, inflater);
-    }
 
-    /**
-     * @param item The menu item that was selected.
-     * @return
-     *
-     * Switch between different camera views based on user preference (on button click)
-     * Need to replace videos with live camera views later when backend is ready
-     *
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-        if (itemId == R.id.camera_1) {
-            String videoPath = "android.resource://" + getActivity().getPackageName() + "/" + R.raw.img_7474;
-            videoView.setVideoURI(Uri.parse(videoPath));
-            videoView.start();
-            Toast.makeText(getContext(), "Camera View 1 Selected", Toast.LENGTH_LONG).show();
-            return true;
-        } else if (itemId == R.id.camera_2) {
-            String videoPath = "android.resource://" + getActivity().getPackageName() + "/" + R.raw.img_7475;
-            videoView.setVideoURI(Uri.parse(videoPath));
-            videoView.start();
-            Toast.makeText(getContext(), "Camera View 2 Selected", Toast.LENGTH_LONG).show();
-            return true;
-        } else if (itemId == R.id.camera_3) {
-            String videoPath = "android.resource://" + getActivity().getPackageName() + "/" + R.raw.img_7476;
-            videoView.setVideoURI(Uri.parse(videoPath));
-            videoView.start();
-            Toast.makeText(getContext(), "Camera View 3 Selected", Toast.LENGTH_LONG).show();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
 }
 

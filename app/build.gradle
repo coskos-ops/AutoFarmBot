@@ -52,6 +52,11 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.5.3'
     testImplementation 'junit:junit:4.13.2'
 
+    def fragment_version = "1.6.2"
+
+    debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
+
+
     androidTestImplementation 'androidx.test.ext:junit:1.2.0-alpha01'
 
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
