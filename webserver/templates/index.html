@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live stream</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #000; /* Set background color to black */
+        }
+
+        .container {
+            text-align: center;
+            max-width: 100%; /* Full width on all devices */
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #uploaded-image {
+            width: 300px; /* Set the width to 300px */
+            height: 250px; /* Set the height to 300px */
+            object-fit: contain; /* Maintain aspect ratio while fitting within the container */
+            border: none; /* Remove border */
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <img id="uploaded-image" alt="" src="" style="background-color: #fff; visibility: hidden;">
+    </div>
+
+    <script>
+        function updateImage() {
+            // Change the endpoint to a new one that handles GET requests
+            const timestamp = new Date().getTime();
+            const parameter = "{{ parameter }}";  // This will be replaced by Flask with the actual parameter value
+            const imageUrl = `/get${parameter}?timestamp=${timestamp}`;  // Timestamp for cache-busting
+
+            // Log timestamp for debugging
+            console.log('Timestamp:', timestamp);
+
+            // Create a new Image element
+            const newImage = new Image();
+
+            // Set the onload event to ensure the image is fully loaded before updating the src
+            newImage.onload = function () {
+                // Log successful image load for debugging
+                console.log('Image loaded successfully');
+
+                document.getElementById('uploaded-image').src = newImage.src;
+                // Reset background color and set visibility to show the image
+                document.getElementById('uploaded-image').style.backgroundColor = '';
+                document.getElementById('uploaded-image').style.visibility = 'visible';
+            };
+
+            // Set the onerror event to handle image loading errors
+            newImage.onerror = function () {
+                console.error('Error loading image');
+
+                // If image loading fails, set a white background and hide broken image icon
+                document.getElementById('uploaded-image').style.backgroundColor = '#fff';
+                document.getElementById('uploaded-image').style.visibility = 'hidden';
+            };
+
+            // Set the src of the new Image element with the data URL
+            newImage.src = imageUrl;
+        }
+
+        // Update the image every 400 ms
+        setInterval(updateImage, 200);
+
+        // Initial update
+        updateImage();
+    </script>
+</body>
+</html>

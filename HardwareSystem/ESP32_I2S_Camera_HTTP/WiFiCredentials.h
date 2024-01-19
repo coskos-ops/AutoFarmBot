@@ -1,2 +1,2 @@
-#define MY_SSID "BELL123"
-#define MY_PASSWORD "21EA45AA79AE"
+#define MY_SSID "SM-G960W3905"
+#define MY_PASSWORD "xkkv1511"

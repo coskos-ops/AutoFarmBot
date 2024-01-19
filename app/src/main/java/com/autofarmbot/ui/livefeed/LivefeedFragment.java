@@ -56,8 +56,8 @@ public class LivefeedFragment extends Fragment {
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
-        // Load a URL (e.g., Google's homepage)
-        webView.loadUrl("https://coskos.pythonanywhere.com/");
+        // Load a URL
+        webView.loadUrl("https://coskos.pythonanywhere.com/cam1");
 
         return view;
     }
@@ -73,6 +73,31 @@ public class LivefeedFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.live_feed_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        int id = item.getItemId();
+        if(id == R.id.camera_1) {
+            webView.loadUrl("https://coskos.pythonanywhere.com/cam1");
+        }
+        else {
+            webView.loadUrl("https://coskos.pythonanywhere.com/cam2");
+        }
+        return true;
+
+    }
+
+
+
+
 
 
 
