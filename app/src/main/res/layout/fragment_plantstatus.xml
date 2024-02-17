@@ -17,44 +17,8 @@
             android:layout_width="match_parent"
             android:layout_height="0px"
             android:background="#FFFFFF"
-            android:divider="@android:drawable/divider_horizontal_bright"
+            android:divider="@android:drawable/divider_horizontal_dark"
             android:showDividers="middle">
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:clickable="false"
-                android:divider="@android:drawable/divider_horizontal_textfield"
-                android:gravity="left"
-                android:rotation="0">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="292dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|left"
-                        android:fontFamily="@font/alatsi"
-                        android:padding="10sp"
-                        android:text="@string/Distance"
-                        android:textSize="24sp" />
-
-                    <TextView
-                        android:id="@+id/distanceValue"
-                        android:layout_width="126dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|left"
-                        android:fontFamily="@font/alatsi"
-                        android:padding="10sp"
-                        android:text="@string/Distance_value"
-                        android:textSize="24sp" />
-                </LinearLayout>
-
-            </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
@@ -80,7 +44,7 @@
 
                     <TextView
                         android:id="@+id/ECvalue"
-                        android:layout_width="126dp"
+                        android:layout_width="99dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center|left"
                         android:fontFamily="@font/alatsi"
@@ -91,12 +55,82 @@
 
             </TableRow>
 
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="135dp"
+                android:layout_weight="1"
+                android:background="#FFFFFF"
+                android:clickable="false"
+                android:gravity="left">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="292dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|left"
+                        android:fontFamily="@font/alatsi"
+                        android:padding="10sp"
+                        android:text="@string/TDS"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:id="@+id/TDSValue"
+                        android:layout_width="126dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|left"
+                        android:fontFamily="@font/alatsi"
+                        android:padding="10sp"
+                        android:text="@string/TDS_value"
+                        android:textSize="24sp" />
+                </LinearLayout>
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="135dp"
+                android:layout_weight="1"
+                android:background="#FFFFFF"
+                android:clickable="false"
+                android:gravity="left">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="292dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|left"
+                        android:fontFamily="@font/alatsi"
+                        android:padding="10sp"
+                        android:text="@string/Temp"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:id="@+id/TempValue"
+                        android:layout_width="126dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|left"
+                        android:fontFamily="@font/alatsi"
+                        android:padding="10sp"
+                        android:text="@string/Temp_value"
+                        android:textSize="24sp" />
+                </LinearLayout>
+
+            </TableRow>
+
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:clickable="false"
-                android:divider="@android:drawable/divider_horizontal_textfield"
                 android:gravity="left"
                 android:rotation="0">
 
@@ -150,7 +184,7 @@
 
                     <TextView
                         android:id="@+id/P1status"
-                        android:layout_width="115dp"
+                        android:layout_width="123dp"
                         android:layout_height="match_parent"
                         android:fontFamily="@font/alatsi"
                         android:padding="10sp"
@@ -191,7 +225,7 @@
 
                     <TextView
                         android:id="@+id/P2status"
-                        android:layout_width="115dp"
+                        android:layout_width="122dp"
                         android:layout_height="match_parent"
                         android:fontFamily="@font/alatsi"
                         android:padding="10sp"
@@ -232,7 +266,7 @@
 
                     <TextView
                         android:id="@+id/P3status"
-                        android:layout_width="115dp"
+                        android:layout_width="122dp"
                         android:layout_height="match_parent"
                         android:fontFamily="@font/alatsi"
                         android:padding="10sp"
@@ -273,7 +307,7 @@
 
                     <TextView
                         android:id="@+id/P4status"
-                        android:layout_width="115dp"
+                        android:layout_width="123dp"
                         android:layout_height="match_parent"
                         android:fontFamily="@font/alatsi"
                         android:padding="10sp"
@@ -290,6 +324,89 @@
                 </LinearLayout>
 
             </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="#FFFFFF"
+                android:clickable="false">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="115dp"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/alatsi"
+                        android:padding="10sp"
+                        android:text="@string/P5"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:id="@+id/P5status"
+                        android:layout_width="123dp"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/alatsi"
+                        android:padding="10sp"
+                        android:text="@string/empty"
+                        android:textSize="24sp" />
+
+                    <Button
+                        android:id="@+id/P5Harvest"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:text="Harvest"
+                        app:backgroundTint="#4CAF50" />
+                </LinearLayout>
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="#FFFFFF"
+                android:clickable="false">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="115dp"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/alatsi"
+                        android:padding="10sp"
+                        android:text="@string/P6"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:id="@+id/P6status"
+                        android:layout_width="122dp"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/alatsi"
+                        android:padding="10sp"
+                        android:text="@string/empty"
+                        android:textSize="24sp" />
+
+                    <Button
+                        android:id="@+id/P6Harvest"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:text="Harvest"
+                        app:backgroundTint="#4CAF50" />
+                </LinearLayout>
+
+            </TableRow>
+
 
         </TableLayout>
     </ScrollView>

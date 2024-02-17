@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,6 +28,8 @@ public class PlantstatusFragment extends Fragment {
      */
     private static FragmentPlantstatusBinding binding;
 
+    private static int growthThreshold = 12;
+
     /**
      * Color for data when it is in an acceptable range
      */
@@ -40,20 +41,20 @@ public class PlantstatusFragment extends Fragment {
     /**
      * Minimum acceptable EC value (inclusive)
      */
-    private static final float ECMINBOUND = 1.4F;
+    public static final float ECMINBOUND = 1.4F;
     /**
      * Maximum acceptable EC value (inclusive)
      */
-    private static final float ECMAXBOUND = 1.8001F;
+    public static final float ECMAXBOUND = 1.8001F;
     /**
      * Minimum acceptable EC value (inclusive)
      */
-    private static final float PHMINBOUND = 6;
+    public static final float PHMINBOUND = 6;
 
     /**
      * Maximum acceptable EC value (inclusive)
      */
-    private static final float PHMAXBOUND = 7;
+    public static final float PHMAXBOUND = 7;
 
     /**
      * Minimum acceptable distance value (inclusive)
@@ -66,6 +67,7 @@ public class PlantstatusFragment extends Fragment {
     private static final int DISTMAXBOUND = 66;
 
 
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         PlantstatusViewModel plantstatusViewModel =
@@ -73,8 +75,15 @@ public class PlantstatusFragment extends Fragment {
 
         binding = FragmentPlantstatusBinding.inflate(inflater, container, false);
 
+        binding.P1Harvest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Notifier.sendNotif("bs", "ok");
+            }
+        });
 
         return binding.getRoot();
+
     }
 
     @Override
@@ -101,26 +110,94 @@ public class PlantstatusFragment extends Fragment {
         }
 
     }
-
-
-    /**
-     * Changes the distance Value
-     * @param newValue the new distanceValue
-     */
-    @SuppressLint("SetTextI18n")
-    public static void changeDistanceValue(int newValue) {
+    public static void changeTempValue(Integer newValue) {
+        TextView tempValue = binding.TempValue;
         String strValue = String.format("%d", newValue);
-        TextView distanceValue = binding.distanceValue;
-        distanceValue.setText(strValue);
-        if(newValue < DISTMINBOUND || newValue > DISTMAXBOUND) {
-            distanceValue.setTextColor(RED);
-        }
-        else {
-            distanceValue.setTextColor(GREEN);
-        }
-
+        tempValue.setText(strValue);
 
     }
+
+
+
+    public static void changeTDSValue(Integer newValue) {
+        TextView TDSValue = binding.TDSValue;
+        String strValue = String.format("%d", newValue);
+        TDSValue.setText(strValue);
+    }
+
+    public static void changeD1Value(Integer newValue) {
+        TextView D1value = binding.P1status;
+        String strValue = String.format("%d", newValue) + " cm";
+        D1value.setText(strValue);
+        if(newValue >= growthThreshold) {
+            binding.P1Harvest.setEnabled(true);
+        }
+        else {
+            binding.P1Harvest.setEnabled(false);
+        }
+    }
+
+    public static void changeD2Value(Integer newValue) {
+        TextView D2value = binding.P2status;
+        String strValue = String.format("%d", newValue)  + " cm";
+        D2value.setText(strValue);
+        if(newValue >= growthThreshold) {
+            binding.P2Harvest.setEnabled(true);
+        }
+        else {
+            binding.P2Harvest.setEnabled(false);
+        }
+    }
+
+    public static void changeD3Value(Integer newValue) {
+        TextView D3value = binding.P3status;
+        String strValue = String.format("%d", newValue)  + " cm";
+        D3value.setText(strValue);
+        if(newValue >= growthThreshold) {
+            binding.P3Harvest.setEnabled(true);
+        }
+        else {
+            binding.P3Harvest.setEnabled(false);
+        }
+    }
+
+    public static void changeD4Value(Integer newValue) {
+        TextView D4value = binding.P4status;
+        String strValue = String.format("%d", newValue)  + " cm";
+        D4value.setText(strValue);
+        if(newValue >= growthThreshold) {
+            binding.P4Harvest.setEnabled(true);
+        }
+        else {
+            binding.P4Harvest.setEnabled(false);
+        }
+    }
+
+    public static void changeD5Value(Integer newValue) {
+        TextView D5value = binding.P5status;
+        String strValue = String.format("%d", newValue)  + " cm";
+        D5value.setText(strValue);
+        if(newValue >= growthThreshold) {
+            binding.P5Harvest.setEnabled(true);
+        }
+        else {
+            binding.P5Harvest.setEnabled(false);
+        }
+    }
+
+    public static void changeD6Value(Integer newValue) {
+        TextView D5value = binding.P6status;
+        String strValue = String.format("%d", newValue)  + " cm";
+        D5value.setText(strValue);
+        if(newValue >= growthThreshold) {
+            binding.P6Harvest.setEnabled(true);
+        }
+        else {
+            binding.P6Harvest.setEnabled(false);
+        }
+    }
+
+
 
 
     /**
@@ -174,11 +251,11 @@ public class PlantstatusFragment extends Fragment {
         switch (newStatus) {
             case EMPTY:
                 label.setText("Empty");
-                harvestButton.setEnabled(false);
+                harvestButton.setEnabled(true);
                 break;
             case GROWING:
                 label.setText("Growing");
-                harvestButton.setEnabled(false);
+                harvestButton.setEnabled(true);
                 break;
             case RIPE:
                 label.setText("Ripe");

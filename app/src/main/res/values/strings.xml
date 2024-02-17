@@ -5,30 +5,33 @@
     <string name="title_livefeed">Live Feed</string>
     <string name="pH">pH:</string>
     <string name="EC">EC (mS/cm):</string>
-    <string name="Distance">Distance (cm):</string>
-    <string name="illuminance">Illuminance</string>
+    <string name="TDS">TDS (ppm)</string>
+    <string name="Temp">Temp °C</string>
+
     <string name="EC_value">0.0</string>
     <string name="pH_value">0.0</string>
-    <string name="Distance_value">0</string>
+    <string name="TDS_value">0</string>
+    <string name="Temp_value">0</string>
+
+
+  <string name = "empty">Empty</string>
+
     <string name="P1">Plant 1</string>
     <string name="P2">Plant 2</string>
     <string name="P3">Plant 3</string>
     <string name="P4">Plant 4</string>
+    <string name="P5">Plant 5</string>
+    <string name="P6">Plant 6</string>
 
 
-    <string name="empty">Empty</string>
-    <string name="growing">Growing</string>
-    <string name="ripe">Ripe</string>
+
 
 
     <string name="Harvest">Harvest</string>
 
     <string name="camera_1">Camera 1</string>
     <string name="camera_2">Camera 2</string>
-    <string name="camera_3">Camera 3</string>
-
-
-
+    <string name="default_notification_channel_id">Alert\n</string>
 
 
 </resources>
