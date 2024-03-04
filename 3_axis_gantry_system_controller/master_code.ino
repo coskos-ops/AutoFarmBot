@@ -36,7 +36,7 @@ const int Z_dir_pin = 7;
 const int motorSpeed = 8000;
 const int maxSpeed = 8500;
 const int acceleration = 400;
-int locations [6] = {2,3,5,1,4,6};
+//int locations [6] = {2,3,5,1,4,6}; for testing purposes
 
 // debug mode
 bool verbose = false;
@@ -48,6 +48,7 @@ bool plant = false;
 
 // for calculations
 int plantID = 1; // values range from 1 to 6
+int tx_rx_ID = 0;
 
 AccelStepper stepperX(1, X_step_pin, X_dir_pin);
 AccelStepper stepperY(1, Y_step_pin, Y_dir_pin);
@@ -61,7 +62,7 @@ void setup() {
   pinMode(Z_step_pin, OUTPUT);
   pinMode(Z_dir_pin, OUTPUT);
 
-  Serial.begin(115200); // for communications 
+  Serial.begin(9600); // for communications 
   
   stepperX.setMaxSpeed(maxSpeed);
   stepperY.setMaxSpeed(maxSpeed);
@@ -84,7 +85,7 @@ void setup() {
 
 void loop() {
   //Serial.print("Hi\n");
-  if(verbose) Serial.print("Loop: \n");
+  if(verbose) Serial.print("\nLoop: \n");
 
   /*
       Communications with ESP Controller (Primary)
@@ -106,77 +107,89 @@ void loop() {
     //esp32Decoder(rxData, &harvest, &plant, &ready, &plantID);
 
     //test
-  for (int i = 0; i < sizeof(locations); i++){
-    harvest = true;
-    plant = false;
-    ready = false;
-    plantID = locations[i];
+  //for (int i = 0; i < sizeof(locations); i++){
+  if (Serial.available() > 0) {
+    String receivedMessage = Serial.readStringUntil('\n');
+    //String receivedMessage = "204,3,harvest";
+    // Process the received message
+    if(verbose) Serial.print("\nReceived from Esp32: ");
+    if(verbose) Serial.println(receivedMessage);
+    esp32Decoder(receivedMessage, &harvest, &plant, &ready, &plantID, &tx_rx_ID);
+    //delay(1000);
+    //harvest = true;
+    //plant = false;
+    //ready = false;
+    //plantID = locations[i];
 
-  //}
-  if(!ready){
-    Serial.write("Busy\n"); // inform esp32 that no instruction will be accepted
-  }
-  if(verbose) printDebug("Harvest ", harvest);
-  if(verbose) printDebug("Plant ", plant);
-  if(verbose) printDebug("Ready ", ready);
-  if(verbose) printDebug("Plant Number ", plantID);
+    if(!ready){
+      Serial.write("Busy\n"); // inform esp32 that no instruction will be accepted
+    }
+    if(verbose) printDebug("Harvest ", harvest);
+    if(verbose) printDebug("Plant ", plant);
+    if(verbose) printDebug("Ready ", ready);
+    if(verbose) printDebug("Plant Number ", plantID);
+    if(verbose) printDebug("TX RX IDENTITY ", tx_rx_ID);
 
-  /*
-      Based on comms, translate into position and move 3D gantry
-  */
-  
-  if(harvest){
-    if(verbose) Serial.print("Harvesting in progress \n");
+    /*
+        Based on comms, translate into position and move 3D gantry
+    */
     
-    // go to plant
-    stepperY.runToNewPosition(plantIDtoYposition(plantID));
-    stepperX.runToNewPosition(plantIDtoXposition(plantID));
-    stepperZ.runToNewPosition(plant_z);
-    stepperZ.runToNewPosition(plant_z-500);
+    if(harvest){
+      if(verbose) Serial.print("Harvesting in progress \n");
+      
+      // go to plant
+      stepperY.runToNewPosition(plantIDtoYposition(plantID));
+      stepperX.runToNewPosition(plantIDtoXposition(plantID));
+      stepperZ.runToNewPosition(plant_z);
+      stepperZ.runToNewPosition(plant_z-500);
 
-    // cut and grab plant (TBD KRIS) - signal to servo motor (sg90)
+      // cut and grab plant (TBD KRIS) - signal to servo motor (sg90)
 
-    // drop plant in container (TBD KRIS) and reset position
-    //stepperZ.runToNewPosition(0);
-    //stepperY.runToNewPosition(0);
-    //stepperX.runToNewPosition(0);
+      // drop plant in container (TBD KRIS) and reset position
+      //stepperZ.runToNewPosition(0);
+      //stepperY.runToNewPosition(0);
+      //stepperX.runToNewPosition(0);
+      
+      // reset flags
+      ready = true;
+      harvest = false;
+    } else if(plant){
+      if(verbose) Serial.print("Planting in progress \n");
+      
+      // go to plant
+      stepperY.runToNewPosition(plantIDtoYposition(plantID));
+      stepperX.runToNewPosition(plantIDtoXposition(plantID));
+      stepperZ.runToNewPosition(plant_z);
+      stepperZ.runToNewPosition(plant_z-500);
+
+      // plant seed (TBD KRIS)
+
+      // reset position
+      //stepperZ.runToNewPosition(0);
+      //stepperY.runToNewPosition(0);
+      //stepperX.runToNewPosition(0);
+      
+      // reset flags
+      ready = true;
+      plant = false;
+    } else {
+      // remain idle
+      if(verbose) Serial.print("No task assigned, saving power \n");
+    }
+
+    if(ready){
+      char ack_command [100];
+      sprintf(ack_command, "Done,%d", tx_rx_ID); 
+      Serial.println(ack_command);
+      //Serial.write("Done "); // ready to fetch next instruction from esp32
+      //Serial.write(tx_rx_ID);
+    }
     
-    // reset flags
-    ready = true;
-    harvest = false;
-  } else if(plant){
-    if(verbose) Serial.print("Planting in progress \n");
-    
-    // go to plant
-    stepperY.runToNewPosition(plantIDtoYposition(plantID));
-    stepperX.runToNewPosition(plantIDtoXposition(plantID));
-    stepperZ.runToNewPosition(plant_z);
-    stepperZ.runToNewPosition(plant_z-500);
-
-    // plant seed (TBD KRIS)
-
-    // reset position
-    //stepperZ.runToNewPosition(0);
-    //stepperY.runToNewPosition(0);
-    //stepperX.runToNewPosition(0);
-    
-    // reset flags
-    ready = true;
-    plant = false;
-  } else {
-    // remain idle
-    if(verbose) Serial.print("No task assigned, saving power \n");
+    //if(verbose) delay(300); // 0.3 second delay
   }
-
-  if(ready){
-    Serial.write("Ready\n"); // ready to fetch next instruction from esp32
-  }
-  
-  if(verbose) delay(300); // 0.3 second delay
-  }
-  reset();
-  if(verbose) Serial.print("Done\n");
-  exit(0);
+  //reset();
+  //if(verbose) Serial.print("Program Closed\n");
+  //exit(0);
 }
 
 void reset (){
@@ -185,14 +198,18 @@ void reset (){
   stepperY.runToNewPosition(0);
 }
 
-void esp32Decoder(String data, bool* harvest, bool* plant, bool* status, int* id){
-  int commaIndex = 0;
+void esp32Decoder(String data, bool* harvest, bool* plant, bool* status, int* id, int* tx_rx_id){
+  int commaIndex, secondCommaIndex = 0;
   commaIndex = data.indexOf(',');
-  String operation = data.substring(0, commaIndex); // parse first word and remove whitespace
-  operation.trim();
-  String number = data.substring(commaIndex+1); // parse plant number
+  secondCommaIndex = data.indexOf(',', commaIndex + 1);
+  String comm_id = data.substring(0, commaIndex); // parse first word and remove whitespace
+  comm_id.trim();
+  *tx_rx_id = comm_id.toInt();
+  String number = data.substring(commaIndex+1, secondCommaIndex); // parse plant number
   number.trim();
   *id = number.toInt();
+  String operation = data.substring(secondCommaIndex + 1); // parse last word and remove whitespace
+  operation.trim();
 
   if(operation == "harvest" && *status == true){
     *harvest = true;
