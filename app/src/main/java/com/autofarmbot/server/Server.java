@@ -16,8 +16,8 @@ public class Server {
     // Use AtomicReference for thread safety
     private static AtomicReference<Double> pH = new AtomicReference<>(0.0);
     private static AtomicReference<Double> ec = new AtomicReference<>(0.0);
-    private static AtomicReference<Integer> tds = new AtomicReference<>(0);
-    private static AtomicReference<Integer> temp = new AtomicReference<>(0);
+    private static AtomicReference<Double> tds = new AtomicReference<>(0.0);
+    private static AtomicReference<Double> temp = new AtomicReference<>(0.0);
 
 
     private static AtomicReference<Integer> d1 = new AtomicReference<>(0);
@@ -48,8 +48,8 @@ public class Server {
 
                     pH.set((Double) obj.get("pH"));
                     ec.set((Double) obj.get("ec"));
-                    tds.set((Integer) obj.get("tds"));
-                    temp.set((Integer) obj.get("temp"));
+                    tds.set((Double) obj.get("tds"));
+                    temp.set((Double) obj.get("temp"));
 
                     // Notify PlantstatusFragment about the changes
                     PlantstatusFragment.changePHValue(pH.get());
@@ -96,11 +96,11 @@ public class Server {
         return ec.get();
     }
 
-    public static Integer getTDS() {
+    public static Double getTDS() {
         return tds.get();
     }
 
-    public static Integer getTemp() {
+    public static Double getTemp() {
         return temp.get();
     }
 

@@ -2,6 +2,7 @@ package com.autofarmbot.ui.plantstatus;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,20 @@ import androidx.lifecycle.ViewModelProvider;
 import com.autofarmbot.databinding.FragmentPlantstatusBinding;
 import com.autofarmbot.plant.Plant;
 import com.autofarmbot.plant.PlantStatus;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 /**
  * Plant status window
@@ -66,6 +81,94 @@ public class PlantstatusFragment extends Fragment {
      */
     private static final int DISTMAXBOUND = 66;
 
+    private int generateUniqueIntId() {
+        // Generate a random UUID
+        UUID uuid = UUID.randomUUID();
+
+        // Convert UUID to long
+        long uuidAsLong = uuid.getMostSignificantBits();
+
+        // Use hash code to convert to int
+        int uniqueId = (int) (uuidAsLong ^ (uuidAsLong >>> 32));
+
+        // Ensure the ID is positive
+        return Math.abs(uniqueId);
+    }
+
+    private static class PostRequestTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... params) {
+            try {
+                // Extract parameters
+                String postUrl = params[0];
+                String jsonBody = params[1];
+
+                // Create a URL object
+                URL url = new URL(postUrl);
+
+                // Open connection
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+
+                try {
+                    // Set the request method to POST
+                    urlConnection.setRequestMethod("POST");
+
+                    // Set the content type to application/json
+                    urlConnection.setRequestProperty("Content-Type", "application/json");
+
+                    // Enable input/output streams
+                    urlConnection.setDoOutput(true);
+
+                    // Write the JSON data to the output stream
+                    OutputStream outputStream = urlConnection.getOutputStream();
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                    writer.write(jsonBody);
+                    writer.flush();
+                    writer.close();
+                    outputStream.close();
+
+                    // Get the response code (optional)
+                    int responseCode = urlConnection.getResponseCode();
+
+
+                } finally {
+                    // Disconnect the connection
+                    urlConnection.disconnect();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        // You can override onPostExecute if you need to handle the result
+        // protected void onPostExecute(Void result) {
+        //     // Handle the result
+        // }
+    }
+
+
+    private void sendRequest(int id, int target, String action) {
+        try {
+            // Construct your JSON data
+            JSONObject jsonData = new JSONObject();
+            jsonData.put("id", id);
+            jsonData.put("target", target);
+            jsonData.put("action", action);
+
+            // Convert the JSON data to a string
+            String jsonBody = jsonData.toString();
+
+            // Specify the URL where you want to send the POST request
+            String postUrl = "https://coskos.pythonanywhere.com/postCommand"; // Replace this with your actual URL
+
+            new PostRequestTask().execute(postUrl, jsonBody);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -78,7 +181,60 @@ public class PlantstatusFragment extends Fragment {
         binding.P1Harvest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Notifier.sendNotif("bs", "ok");
+                int id = generateUniqueIntId();
+                int target = 1;
+                String action = "H";
+                sendRequest(id, target, action);
+            }
+        });
+
+        binding.P2Harvest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int id = generateUniqueIntId();
+                int target = 2;
+                String action = "H";
+                sendRequest(id, target, action);
+            }
+        });
+
+        binding.P3Harvest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int id = generateUniqueIntId();
+                int target = 3;
+                String action = "H";
+                sendRequest(id, target, action);
+            }
+        });
+
+        binding.P4Harvest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int id = generateUniqueIntId();
+                int target = 4;
+                String action = "H";
+                sendRequest(id, target, action);
+            }
+        });
+
+        binding.P5Harvest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int id = generateUniqueIntId();
+                int target = 5;
+                String action = "H";
+                sendRequest(id, target, action);
+            }
+        });
+
+        binding.P6Harvest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int id = generateUniqueIntId();
+                int target = 6;
+                String action = "H";
+                sendRequest(id, target, action);
             }
         });
 
@@ -110,18 +266,18 @@ public class PlantstatusFragment extends Fragment {
         }
 
     }
-    public static void changeTempValue(Integer newValue) {
+    public static void changeTempValue(Double newValue) {
         TextView tempValue = binding.TempValue;
-        String strValue = String.format("%d", newValue);
+        String strValue = String.format("%.2f", newValue);
         tempValue.setText(strValue);
 
     }
 
 
 
-    public static void changeTDSValue(Integer newValue) {
+    public static void changeTDSValue(Double newValue) {
         TextView TDSValue = binding.TDSValue;
-        String strValue = String.format("%d", newValue);
+        String strValue = String.format("%.2f", newValue);
         TDSValue.setText(strValue);
     }
 
