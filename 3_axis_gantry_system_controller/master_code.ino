@@ -33,9 +33,9 @@ const int Z_step_pin = 4;
 const int Z_dir_pin = 7;
 
 // User define steps per second for all motors
-const int motorSpeed = 8000;
-const int maxSpeed = 8500;
-const int acceleration = 400;
+const int motorSpeed = 400;
+const int maxSpeed = 500;
+const int acceleration = 100;
 //int locations [6] = {2,3,5,1,4,6}; for testing purposes
 
 // debug mode
@@ -49,6 +49,7 @@ bool plant = false;
 // for calculations
 int plantID = 1; // values range from 1 to 6
 int tx_rx_ID = 0;
+String prevRecMessage = "empty";
 
 AccelStepper stepperX(1, X_step_pin, X_dir_pin);
 AccelStepper stepperY(1, Y_step_pin, Y_dir_pin);
@@ -80,7 +81,7 @@ void setup() {
   // all operations should reset to this point
   stepperX.runToNewPosition(0);
   stepperY.runToNewPosition(0);
-  stepperZ.runToNewPosition(0);  
+  stepperZ.runToNewPosition(0);   
 }
 
 void loop() {
@@ -100,29 +101,20 @@ void loop() {
       Tranmit: Busy/Ready
   */
 
-  //if(Serial.available()){
-    //String rxData = Serial.readStringUntil('\n');
-    //String rxData = "plant,2\n";
-    //if(verbose) Serial.print("ESP32 Says: " + rxData + "\n");
-    //esp32Decoder(rxData, &harvest, &plant, &ready, &plantID);
-
-    //test
-  //for (int i = 0; i < sizeof(locations); i++){
+  while(1){
   if (Serial.available() > 0) {
     String receivedMessage = Serial.readStringUntil('\n');
+    if(receivedMessage == prevRecMessage){
+      break;
+    }
     //String receivedMessage = "204,3,harvest";
     // Process the received message
-    if(verbose) Serial.print("\nReceived from Esp32: ");
-    if(verbose) Serial.println(receivedMessage);
+    if (verbose) Serial.print("\nReceived from Esp32: ");
+    if (verbose) Serial.println(receivedMessage);
     esp32Decoder(receivedMessage, &harvest, &plant, &ready, &plantID, &tx_rx_ID);
-    //delay(1000);
-    //harvest = true;
-    //plant = false;
-    //ready = false;
-    //plantID = locations[i];
 
     if(!ready){
-      Serial.write("Busy\n"); // inform esp32 that no instruction will be accepted
+      if (verbose) Serial.write("Busy\n"); // inform esp32 that no instruction will be accepted
     }
     if(verbose) printDebug("Harvest ", harvest);
     if(verbose) printDebug("Plant ", plant);
@@ -143,7 +135,7 @@ void loop() {
       stepperZ.runToNewPosition(plant_z);
       stepperZ.runToNewPosition(plant_z-500);
 
-      // cut and grab plant (TBD KRIS) - signal to servo motor (sg90)
+      // cut and grab plant (TBD KRIS or LOGAN) - signal to servo motor (sg90)
 
       // drop plant in container (TBD KRIS) and reset position
       //stepperZ.runToNewPosition(0);
@@ -162,7 +154,7 @@ void loop() {
       stepperZ.runToNewPosition(plant_z);
       stepperZ.runToNewPosition(plant_z-500);
 
-      // plant seed (TBD KRIS)
+      // plant seed (TBD KRIS or LOGAN)
 
       // reset position
       //stepperZ.runToNewPosition(0);
@@ -181,14 +173,14 @@ void loop() {
       char ack_command [100];
       sprintf(ack_command, "Done,%d", tx_rx_ID); 
       Serial.println(ack_command);
-      //Serial.write("Done "); // ready to fetch next instruction from esp32
-      //Serial.write(tx_rx_ID);
     }
     
     //if(verbose) delay(300); // 0.3 second delay
+    prevRecMessage = receivedMessage;
+  }
   }
   //reset();
-  //if(verbose) Serial.print("Program Closed\n");
+  if(verbose) Serial.print("Program Closed\n");
   //exit(0);
 }
 
@@ -203,15 +195,17 @@ void esp32Decoder(String data, bool* harvest, bool* plant, bool* status, int* id
   commaIndex = data.indexOf(',');
   secondCommaIndex = data.indexOf(',', commaIndex + 1);
   String comm_id = data.substring(0, commaIndex); // parse first word and remove whitespace
-  comm_id.trim();
+  if(verbose) Serial.print("\nComm Id: ");
+  if(verbose) Serial.println(comm_id);
   *tx_rx_id = comm_id.toInt();
+  if(verbose) Serial.println(*tx_rx_id);
   String number = data.substring(commaIndex+1, secondCommaIndex); // parse plant number
   number.trim();
   *id = number.toInt();
   String operation = data.substring(secondCommaIndex + 1); // parse last word and remove whitespace
   operation.trim();
 
-  if(operation == "harvest" && *status == true){
+  if(operation == "Harvest" && *status == true){
     *harvest = true;
     *status = false;
   } else if(operation == "plant" && *status == true){
