@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.autofarmbot.MainActivity;
 import com.autofarmbot.databinding.FragmentPlantstatusBinding;
 import com.autofarmbot.plant.Plant;
 import com.autofarmbot.plant.PlantStatus;
@@ -92,10 +93,16 @@ public class PlantstatusFragment extends Fragment {
         int uniqueId = (int) (uuidAsLong ^ (uuidAsLong >>> 32));
 
         // Ensure the ID is positive
-        return Math.abs(uniqueId);
+        return Math.abs(uniqueId) % 100 + 1;
     }
 
-    private static class PostRequestTask extends AsyncTask<String, Void, Void> {
+    private class PostRequestTask extends AsyncTask<String, Void, Void> {
+
+        private final PlantstatusFragment fragment;
+
+        PostRequestTask(PlantstatusFragment fragment) {
+            this.fragment = fragment;
+        }
 
         @Override
         protected Void doInBackground(String... params) {
@@ -131,6 +138,54 @@ public class PlantstatusFragment extends Fragment {
                     // Get the response code (optional)
                     int responseCode = urlConnection.getResponseCode();
 
+                    if(responseCode == 200) {
+//                        fragment.requireActivity().runOnUiThread(() -> {
+//                            binding.P1Harvest.setEnabled(false);
+//                            binding.P2Harvest.setEnabled(false);
+//                            binding.P3Harvest.setEnabled(false);
+//                            binding.P4Harvest.setEnabled(false);
+//                            binding.P5Harvest.setEnabled(false);
+//                            binding.P6Harvest.setEnabled(false);
+//
+//                        });
+
+                        // Get the commandId from the jsonBody
+                        int commandId = extractCommandId(jsonBody);
+
+                        // Loop until you get a 404 response
+                        while (true) {
+                            // Make a GET request to check command status
+                            String checkUrl = postUrl + "/checkCommandStatus/" + commandId;
+                            HttpURLConnection getStatusConnection = (HttpURLConnection) new URL(checkUrl).openConnection();
+                            getStatusConnection.setRequestMethod("GET");
+
+                            int getStatusResponseCode = getStatusConnection.getResponseCode();
+
+                            if (getStatusResponseCode == 404) {
+                                // Command not found, break the loop
+                                break;
+                            }
+
+                            // Optionally, you can add a delay to avoid continuous polling and reduce server load
+                            try {
+                                Thread.sleep(1000); // Sleep for 1 second
+                            }
+                            catch (InterruptedException e) {
+
+                            }
+                        }
+//                        fragment.requireActivity().runOnUiThread(() -> {
+//                        binding.P1Harvest.setEnabled(true);
+//                        binding.P2Harvest.setEnabled(true);
+//                        binding.P3Harvest.setEnabled(true);
+//                        binding.P4Harvest.setEnabled(true);
+//                        binding.P5Harvest.setEnabled(true);
+//                        binding.P6Harvest.setEnabled(true);
+//
+//                        });
+
+                    }
+
 
                 } finally {
                     // Disconnect the connection
@@ -140,6 +195,16 @@ public class PlantstatusFragment extends Fragment {
                 e.printStackTrace();
             }
             return null;
+        }
+
+        private int extractCommandId(String jsonBody) {
+            try {
+                JSONObject jsonObject = new JSONObject(jsonBody);
+                return jsonObject.getInt("id");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return -1; // Return a default value or handle the error accordingly
         }
 
         // You can override onPostExecute if you need to handle the result
@@ -163,7 +228,7 @@ public class PlantstatusFragment extends Fragment {
             // Specify the URL where you want to send the POST request
             String postUrl = "https://coskos.pythonanywhere.com/postCommand"; // Replace this with your actual URL
 
-            new PostRequestTask().execute(postUrl, jsonBody);
+            new PostRequestTask(this).execute(postUrl, jsonBody);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -183,7 +248,7 @@ public class PlantstatusFragment extends Fragment {
             public void onClick(View view) {
                 int id = generateUniqueIntId();
                 int target = 1;
-                String action = "H";
+                String action = "Harvest";
                 sendRequest(id, target, action);
             }
         });
@@ -193,7 +258,7 @@ public class PlantstatusFragment extends Fragment {
             public void onClick(View view) {
                 int id = generateUniqueIntId();
                 int target = 2;
-                String action = "H";
+                String action = "Harvest";
                 sendRequest(id, target, action);
             }
         });
@@ -203,7 +268,7 @@ public class PlantstatusFragment extends Fragment {
             public void onClick(View view) {
                 int id = generateUniqueIntId();
                 int target = 3;
-                String action = "H";
+                String action = "Harvest";
                 sendRequest(id, target, action);
             }
         });
@@ -213,7 +278,7 @@ public class PlantstatusFragment extends Fragment {
             public void onClick(View view) {
                 int id = generateUniqueIntId();
                 int target = 4;
-                String action = "H";
+                String action = "Harvest";
                 sendRequest(id, target, action);
             }
         });
@@ -223,7 +288,7 @@ public class PlantstatusFragment extends Fragment {
             public void onClick(View view) {
                 int id = generateUniqueIntId();
                 int target = 5;
-                String action = "H";
+                String action = "Harvest";
                 sendRequest(id, target, action);
             }
         });
@@ -233,7 +298,7 @@ public class PlantstatusFragment extends Fragment {
             public void onClick(View view) {
                 int id = generateUniqueIntId();
                 int target = 6;
-                String action = "H";
+                String action = "Harvest";
                 sendRequest(id, target, action);
             }
         });
