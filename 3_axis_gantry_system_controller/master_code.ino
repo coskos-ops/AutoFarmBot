@@ -103,6 +103,9 @@ void setup() {
   stepperZ.runToNewPosition(0); 
 
   close_claw();
+  // Ground the signal pin after operation finishes
+  digitalWrite(claw_pin, LOW); // Ground the signal pin
+  delay(1000); 
 }
 
 void loop() {
@@ -147,13 +150,21 @@ void loop() {
     //    Based on comms, translate into position and move 3D gantry
     if(harvest){
       if(verbose) Serial.print("Harvesting in progress \n");
-      
+      // Ground the signal pin after operation finishes
+      digitalWrite(claw_pin, LOW); // Ground the signal pin
+      delay(1000); 
       // go to plant
       stepperY.runToNewPosition(plantIDtoYposition(plantID));
       stepperX.runToNewPosition(plantIDtoXposition(plantID));
       // signal to servo motor (sg90) -> OPEN
+      // Ground the signal pin after operation finishes
+      digitalWrite(claw_pin, LOW); // Ground the signal pin
+      delay(1000); 
       open_claw();
       stepperZ.runToNewPosition(plant_z);
+      // Ground the signal pin after operation finishes
+      digitalWrite(claw_pin, LOW); // Ground the signal pin
+      delay(1000); 
       close_claw();
       
       //stepperZ.runToNewPosition(plant_z-500);
@@ -162,10 +173,14 @@ void loop() {
       stepperZ.runToNewPosition(0);
       stepperY.runToNewPosition(0);
       stepperX.runToNewPosition(0);
+      // Ground the signal pin after operation finishes
+      digitalWrite(claw_pin, LOW); // Ground the signal pin
+      delay(1000); 
 
       // drop plant in container (TBD KRIS) 
       // signal to servo motor (sg90) -> OPEN
       open_claw();
+      delay(2000);
       //close
       close_claw();
       
@@ -221,7 +236,29 @@ void loop() {
   if(verbose) Serial.print("Program Closed\n");
   //exit(0);
 }
+
 void close_claw(){
+  for (pos = 30; pos <= 120; pos += 1) { // goes from 0 degrees to 180 degrees
+    // in steps of 1 degree
+    myservo.write(pos);              // tell servo to go to position in variable 'pos'
+    delay(15);                       // waits 15ms for the servo to reach the position
+  }
+  // Ground the signal pin after operation finishes
+  digitalWrite(claw_pin, LOW); // Ground the signal pin
+  delay(1000); 
+}
+
+void open_claw(){
+  for (pos = 120; pos >= 30; pos -= 1) { // goes from 180 degrees to 0 degrees
+    myservo.write(pos);              // tell servo to go to position in variable 'pos'
+    delay(15);                       // waits 15ms for the servo to reach the position
+  }
+  // Ground the signal pin after operation finishes
+  digitalWrite(claw_pin, LOW); // Ground the signal pin
+  delay(1000); 
+}
+
+void close_claw_old(){
   for (pos = 50; pos <= 120; pos += 1) { // goes from 0 degrees to 180 degrees
     // in steps of 1 degree
     myservo.write(pos);              // tell servo to go to position in variable 'pos'
@@ -229,7 +266,7 @@ void close_claw(){
   }
 }
 
-void open_claw(){
+void open_claw_old(){
   for (pos = 120; pos >= 50; pos -= 1) { // goes from 180 degrees to 0 degrees
     myservo.write(pos);              // tell servo to go to position in variable 'pos'
     delay(15);                       // waits 15ms for the servo to reach the position
