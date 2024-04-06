@@ -41,13 +41,13 @@ const int Y_step_pin = 3;
 const int Y_dir_pin = 6;
 const int Z_step_pin = 4;
 const int Z_dir_pin = 7;
-const int claw_pin = 9;
+const int claw_pin = 13;
 
 // User define steps per second for all motors
 const int motorSpeed = 80;
 const int maxSpeed = 500;
 const int acceleration = 100;
-const int scanDelay = 60000; // will check all plants for maturity (in ms)
+const long scanDelay = 300000; // will check all plants for maturity (in ms)
 //int locations [6] = {2,3,5,1,4,6}; for testing purposes
 
 // debug mode
@@ -129,7 +129,8 @@ void loop() {
   if (Serial.available() > 0) {
     String receivedMessage = Serial.readStringUntil('\n');
     if(receivedMessage == prevRecMessage){
-      break;
+      //break;
+      continue;
     }
     //String receivedMessage = "204,3,harvest";
     // Process the received message
@@ -224,6 +225,14 @@ void loop() {
     currentTime = millis(); // in milliseconds
 
     // is it time yet?
+    if(verbose) Serial.print("\nCurrent: ");
+    if(verbose) Serial.print(currentTime);
+    if(verbose) Serial.print("\nPrevious: ");
+    if(verbose) Serial.print(previousTime);
+    if(verbose) Serial.print("\nScan: ");
+    if(verbose) Serial.print(scanDelay);
+    if(verbose) Serial.print("\nMinus: ");
+    if(verbose) Serial.print(currentTime - previousTime);
     if(currentTime - previousTime >= scanDelay){
       // code to scan
       if(verbose) Serial.print("Gantry Scanning to check for Plant Maturity\n");
