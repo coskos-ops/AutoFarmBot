@@ -72,6 +72,9 @@ public class PlantstatusFragment extends Fragment {
      */
     public static final float PHMAXBOUND = 7;
 
+    public static final int LOW_WATER_LEVEL = 50;
+    public static final int CRITICAL_WATER_LEVEL = 0;
+
     /**
      * Minimum acceptable distance value (inclusive)
      */

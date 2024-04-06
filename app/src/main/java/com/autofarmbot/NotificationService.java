@@ -2,8 +2,10 @@ package com.autofarmbot;
 
 
 import static com.autofarmbot.App.CHANNEL_1_ID;
+import static com.autofarmbot.ui.plantstatus.PlantstatusFragment.CRITICAL_WATER_LEVEL;
 import static com.autofarmbot.ui.plantstatus.PlantstatusFragment.ECMAXBOUND;
 import static com.autofarmbot.ui.plantstatus.PlantstatusFragment.ECMINBOUND;
+import static com.autofarmbot.ui.plantstatus.PlantstatusFragment.LOW_WATER_LEVEL;
 import static com.autofarmbot.ui.plantstatus.PlantstatusFragment.PHMAXBOUND;
 import static com.autofarmbot.ui.plantstatus.PlantstatusFragment.PHMINBOUND;
 
@@ -108,6 +110,9 @@ public class NotificationService extends Service {
     private void showNotification() {
         Double ph = Server.getPH();
         Double ec = Server.getEC();
+        double WLpercent = (double)Server.getWL() / 40.0 * 100;
+
+
 
         if(ph < PHMINBOUND || ph > PHMAXBOUND || ec < ECMINBOUND || ec > ECMAXBOUND) {
             Intent activityIntent = new Intent(this, MainActivity.class);
@@ -126,6 +131,47 @@ public class NotificationService extends Service {
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
             notificationManager.notify(1, builder.build());
         }
+//        else if(wl < ) {
+//
+//        }
+        if(WLpercent <= LOW_WATER_LEVEL && WLpercent > CRITICAL_WATER_LEVEL) {
+            Intent activityIntent = new Intent(this, MainActivity.class);
+            activityIntent.putExtra("FRAGMENT_TO_LOAD", "PlantStatusFragment");
+            PendingIntent  contentIntent = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_IMMUTABLE);
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_1_ID)
+                    .setSmallIcon(R.drawable.baseline_notifications_active_24)
+                    .setContentTitle("Water level running low")
+                    .setContentText("Help your plants!")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                    .setContentIntent(contentIntent)
+                    .setAutoCancel(true);  // Dismiss the notification when clicked
+
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+            notificationManager.notify(1, builder.build());
+        }
+        else if(WLpercent <= CRITICAL_WATER_LEVEL) {
+            Intent activityIntent = new Intent(this, MainActivity.class);
+            activityIntent.putExtra("FRAGMENT_TO_LOAD", "PlantStatusFragment");
+            PendingIntent  contentIntent = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_IMMUTABLE);
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_1_ID)
+                    .setSmallIcon(R.drawable.baseline_notifications_active_24)
+                    .setContentTitle("Water level critical!")
+                    .setContentText("Fill up the container immediately")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                    .setContentIntent(contentIntent)
+                    .setAutoCancel(true);  // Dismiss the notification when clicked
+
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+            notificationManager.notify(1, builder.build());
+        }
+
+
+
+
 
     }
 }

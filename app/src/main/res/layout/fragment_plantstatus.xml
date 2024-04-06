@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
+    android:clickable="false"
     tools:context=".ui.plantstatus.PlantstatusFragment">
 
     <ScrollView
@@ -34,7 +34,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="292dp"
+                        android:layout_width="247dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center|left"
                         android:fontFamily="@font/alatsi"
@@ -70,7 +70,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="292dp"
+                        android:layout_width="243dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center|left"
                         android:fontFamily="@font/alatsi"
@@ -105,7 +105,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="292dp"
+                        android:layout_width="242dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center|left"
                         android:fontFamily="@font/alatsi"
@@ -140,7 +140,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="292dp"
+                        android:layout_width="242dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center|left"
                         android:fontFamily="@font/alatsi"
@@ -195,7 +195,7 @@
                         android:id="@+id/P1Harvest"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:enabled="false"
+                        android:enabled="true"
                         android:text="Harvest"
                         app:backgroundTint="#4CAF50" />
                 </LinearLayout>
@@ -236,7 +236,7 @@
                         android:id="@+id/P2Harvest"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:enabled="false"
+                        android:enabled="true"
                         android:text="Harvest"
                         app:backgroundTint="#4CAF50" />
                 </LinearLayout>
@@ -277,7 +277,7 @@
                         android:id="@+id/P3Harvest"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:enabled="false"
+                        android:enabled="true"
                         android:text="Harvest"
                         app:backgroundTint="#4CAF50" />
                 </LinearLayout>
@@ -318,7 +318,7 @@
                         android:id="@+id/P4Harvest"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:enabled="false"
+                        android:enabled="true"
                         android:text="Harvest"
                         app:backgroundTint="#4CAF50" />
                 </LinearLayout>
@@ -359,7 +359,7 @@
                         android:id="@+id/P5Harvest"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:enabled="false"
+                        android:enabled="true"
                         android:text="Harvest"
                         app:backgroundTint="#4CAF50" />
                 </LinearLayout>
@@ -400,7 +400,7 @@
                         android:id="@+id/P6Harvest"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:enabled="false"
+                        android:enabled="true"
                         android:text="Harvest"
                         app:backgroundTint="#4CAF50" />
                 </LinearLayout>

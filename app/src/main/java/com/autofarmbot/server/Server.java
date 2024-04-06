@@ -31,6 +31,8 @@ public class Server {
     private static AtomicReference<Integer> d5 = new AtomicReference<>(0);
     private static AtomicReference<Integer> d6 = new AtomicReference<>(0);
 
+    private static AtomicReference<Integer> wl = new AtomicReference<>(0);
+
     public static void startConnection() {
         Thread thread = new Thread(() -> {
             while (true) {
@@ -50,6 +52,7 @@ public class Server {
                     ec.set((Double) obj.get("ec"));
                     tds.set((Double) obj.get("tds"));
                     temp.set((Double) obj.get("temp"));
+                    wl.set((Integer) obj.get("wl"));
 
                     // Notify PlantstatusFragment about the changes
                     PlantstatusFragment.changePHValue(pH.get());
@@ -126,5 +129,7 @@ public class Server {
     public static Integer getD6() {
         return d6.get();
     }
+
+    public static Integer getWL() {return wl.get();}
 
 }
