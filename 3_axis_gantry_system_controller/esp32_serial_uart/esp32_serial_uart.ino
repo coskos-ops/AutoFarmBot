@@ -9,7 +9,7 @@ const char* ssid = "Capstone";
 const char* password = "xkkv1511";
 const char* host = "coskos.pythonanywhere.com";
 uint16_t httpsPort = 443;
-bool verbose = false;
+bool verbose = true;
 
 const long scanDelay = 60000; // will check all plants for maturity (in ms)
 unsigned long currentTime = 0;
@@ -26,6 +26,7 @@ void setup() {
     delay(500);
   }
   digitalWrite(LED_BUILTIN, LOW);
+  Serial2.begin(9600);
 }
 
 void processDistMessage(String distMessage) {
@@ -64,7 +65,7 @@ void processDistMessage(String distMessage) {
     http.begin("https://coskos.pythonanywhere.com/postSensors");
     http.addHeader("Content-Type", "application/json");
     int postCode = http.POST(postPayload);
-    Serial.print(http.getString());
+    //Serial.print(http.getString());
     http.end();
   
 }
@@ -83,7 +84,7 @@ void loop() {
         const int id = jsonDocument["id"];
         const int target = jsonDocument["target"];
         const char* action = jsonDocument["action"];
-        Serial.printf("Command received: Id: %d  Target: %d  Action: %s \n", id, target, action);
+        //Serial.printf("Command received: Id: %d  Target: %d  Action: %s \n", id, target, action);
         char command[100];
         sprintf(command, "%d,%d,%s", id, target, action);
         Serial2.println(command);
@@ -144,6 +145,7 @@ void loop() {
       Serial2.println("DIST");
 
       while (Serial2.available() <= 0);
+      Serial.println("Got past while loop");
       String receivedMessage = Serial2.readStringUntil('\n');
       Serial.print("Recieved: ");
       Serial.println(receivedMessage);
