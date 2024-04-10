@@ -1,5 +1,6 @@
 #include <AccelStepper.h>
 #include <Servo.h>
+#include "SR04.h"
 
 // Reference Table for Stepper Distances of each plant with respect to Collection bin (position 0)
 // Assumed ordering (motor is refering to XY direction - written twice but the same):
@@ -43,11 +44,17 @@ const int Z_step_pin = 4;
 const int Z_dir_pin = 7;
 const int claw_pin = 13;
 
+const int echo_pin = 8;
+const int trig_pin = 9;
+
+
+SR04 sr04 = SR04(echo_pin, trig_pin);
+
 // User define steps per second for all motors
 const int motorSpeed = 80;
 const int maxSpeed = 500;
 const int acceleration = 100;
-const long scanDelay = 300000; // will check all plants for maturity (in ms)
+const long scanDelay = 120000; // will check all plants for maturity (in ms)
 //int locations [6] = {2,3,5,1,4,6}; for testing purposes
 
 // debug mode
@@ -282,41 +289,43 @@ void open_claw_old(){
   }
 }
 
-void scan_for_plant_maturity(){
+void scan_for_plant_maturity() {
   stepperY.runToNewPosition(plantIDtoYposition(5));
   stepperX.runToNewPosition(plantIDtoXposition(5));
-  //stepperZ.runToNewPosition(plant_z);
-  stepperZ.runToNewPosition(plant_z-500);
-  //delay(3000);
+  stepperZ.runToNewPosition(plant_z - 500);
+  int d5 = sr04.Distance();
+
   stepperY.runToNewPosition(plantIDtoYposition(3));
   stepperX.runToNewPosition(plantIDtoXposition(3));
-  //stepperZ.runToNewPosition(plant_z);
-  stepperZ.runToNewPosition(plant_z-500);
-  //delay(3000);
+  int d3 = sr04.Distance();
+
   stepperY.runToNewPosition(plantIDtoYposition(1));
   stepperX.runToNewPosition(plantIDtoXposition(1));
-  //stepperZ.runToNewPosition(plant_z);
-  stepperZ.runToNewPosition(plant_z-500);
-  //delay(3000);
+  int d1 = sr04.Distance();
+
   stepperY.runToNewPosition(plantIDtoYposition(2));
   stepperX.runToNewPosition(plantIDtoXposition(2));
-  //stepperZ.runToNewPosition(plant_z);
-  stepperZ.runToNewPosition(plant_z-500);
-  //delay(3000);
+  int d2 = sr04.Distance();
+
   stepperY.runToNewPosition(plantIDtoYposition(4));
   stepperX.runToNewPosition(plantIDtoXposition(4));
-  //stepperZ.runToNewPosition(plant_z);
-  stepperZ.runToNewPosition(plant_z-500);
-  //delay(3000);
+  int d4 = sr04.Distance();
+
   stepperY.runToNewPosition(plantIDtoYposition(6));
   stepperX.runToNewPosition(plantIDtoXposition(6));
-  //stepperZ.runToNewPosition(plant_z);
-  stepperZ.runToNewPosition(plant_z-500);
-  //delay(3000);
+  int d6 = sr04.Distance();
+
   stepperX.runToNewPosition(0);
   stepperY.runToNewPosition(0);
-  stepperZ.runToNewPosition(0); 
+  stepperZ.runToNewPosition(0);
+
+  // Construct the string
+  //String result = "DIST " + String(d1) + " " + String(d2) + " " + String(d3) + " " + String(d4) + " " + String(d5) + " " + String(d6);
+  
+  // Print or use the result as needed
+  //Serial.println(result);
 }
+
 
 void reset (){
   stepperZ.runToNewPosition(0);
