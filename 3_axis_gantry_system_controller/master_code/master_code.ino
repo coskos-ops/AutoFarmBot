@@ -54,7 +54,7 @@ SR04 sr04 = SR04(echo_pin, trig_pin);
 const int motorSpeed = 80;
 const int maxSpeed = 500;
 const int acceleration = 100;
-const long scanDelay = 120000; // will check all plants for maturity (in ms)
+
 //int locations [6] = {2,3,5,1,4,6}; for testing purposes
 
 // debug mode
@@ -78,6 +78,171 @@ AccelStepper stepperY(1, Y_step_pin, Y_dir_pin);
 AccelStepper stepperZ(1, Z_step_pin, Z_dir_pin);
 Servo myservo;  // create servo object to control a servo
 // twelve servo objects can be created on most boards
+
+
+
+void close_claw(){
+  for (pos = 30; pos <= 120; pos += 1) { // goes from 0 degrees to 180 degrees
+    // in steps of 1 degree
+    myservo.write(pos);              // tell servo to go to position in variable 'pos'
+    delay(15);                       // waits 15ms for the servo to reach the position
+  }
+  // Ground the signal pin after operation finishes
+  digitalWrite(claw_pin, LOW); // Ground the signal pin
+  delay(1000); 
+}
+
+void open_claw(){
+  for (pos = 120; pos >= 30; pos -= 1) { // goes from 180 degrees to 0 degrees
+    myservo.write(pos);              // tell servo to go to position in variable 'pos'
+    delay(15);                       // waits 15ms for the servo to reach the position
+  }
+  // Ground the signal pin after operation finishes
+  digitalWrite(claw_pin, LOW); // Ground the signal pin
+  delay(1000); 
+}
+
+void close_claw_old(){
+  for (pos = 50; pos <= 120; pos += 1) { // goes from 0 degrees to 180 degrees
+    // in steps of 1 degree
+    myservo.write(pos);              // tell servo to go to position in variable 'pos'
+    delay(15);                       // waits 15ms for the servo to reach the position
+  }
+}
+
+void open_claw_old(){
+  for (pos = 120; pos >= 50; pos -= 1) { // goes from 180 degrees to 0 degrees
+    myservo.write(pos);              // tell servo to go to position in variable 'pos'
+    delay(15);                       // waits 15ms for the servo to reach the position
+  }
+}
+
+void scan_for_plant_maturity() {
+  stepperY.runToNewPosition(plantIDtoYposition(5));
+  stepperX.runToNewPosition(plantIDtoXposition(5));
+  stepperZ.runToNewPosition(plant_z - 500);
+  long d5 = sr04.Distance();
+
+  stepperY.runToNewPosition(plantIDtoYposition(3));
+  stepperX.runToNewPosition(plantIDtoXposition(3));
+  long d3 = sr04.Distance();
+
+  stepperY.runToNewPosition(plantIDtoYposition(1));
+  stepperX.runToNewPosition(plantIDtoXposition(1));
+  long d1 = sr04.Distance();
+
+  stepperY.runToNewPosition(plantIDtoYposition(2));
+  stepperX.runToNewPosition(plantIDtoXposition(2));
+  long d2 = sr04.Distance();
+
+  stepperY.runToNewPosition(plantIDtoYposition(4));
+  stepperX.runToNewPosition(plantIDtoXposition(4));
+  long d4 = sr04.Distance();
+
+  stepperY.runToNewPosition(plantIDtoYposition(6));
+  stepperX.runToNewPosition(plantIDtoXposition(6));
+  long d6 = sr04.Distance();
+
+  stepperX.runToNewPosition(0);
+  stepperY.runToNewPosition(0);
+  stepperZ.runToNewPosition(0);
+
+  // Construct the string
+  //Serial.print("DIST %ld %ld %ld %ld %ld %ld\n", d1, d2, d3, d4, d5, d6);
+  String result = String(d1) + " " + String(d2) + " " + String(d3) + " " + String(d4) + " " + String(d5) + " " + String(d6)+ "\n";
+  
+  // Print or use the result as needed
+  Serial.print(result);
+}
+
+
+void reset (){
+  stepperZ.runToNewPosition(0);
+  stepperX.runToNewPosition(0);
+  stepperY.runToNewPosition(0);
+}
+
+void esp32Decoder(String data, bool* harvest, bool* plant, bool* status, int* id, int* tx_rx_id){
+  if(data.startsWith("DIST")) {
+    *harvest = false;
+    *plant = false;
+    *status = false;
+    return;
+  }
+    
+
+  int commaIndex, secondCommaIndex = 0;
+  commaIndex = data.indexOf(',');
+  secondCommaIndex = data.indexOf(',', commaIndex + 1);
+  String comm_id = data.substring(0, commaIndex); // parse first word and remove whitespace
+  if(verbose) Serial.print("\nComm Id: ");
+  if(verbose) Serial.println(comm_id);
+  *tx_rx_id = comm_id.toInt();
+  if(verbose) Serial.println(*tx_rx_id);
+  String number = data.substring(commaIndex+1, secondCommaIndex); // parse plant number
+  number.trim();
+  *id = number.toInt();
+  String operation = data.substring(secondCommaIndex + 1); // parse last word and remove whitespace
+  operation.trim();
+
+  if(operation == "Harvest" && *status == true){
+    *harvest = true;
+    *status = false;
+  } else if(operation == "plant" && *status == true){
+    *plant = true;
+    *status = false;
+  }
+
+}
+
+int plantIDtoXposition(int id){
+  if(id == 1){
+    return plant_1_x;
+  } else if(id == 2){
+    return plant_2_x;
+  } else if(id == 3){
+    return plant_3_x;
+  } else if(id == 4){
+    return plant_4_x;
+  } else if(id == 5){
+    return plant_5_x;
+  } else if(id == 6){
+    return plant_6_x;
+  } else {
+    //error
+    Serial.print("ERROR, not possible ID value");
+    reset();
+    //exit(0);
+  }
+}
+
+int plantIDtoYposition(int id){
+  if(id == 1){
+    return plant_1_y;
+  } else if(id == 2){
+    return plant_2_y;
+  } else if(id == 3){
+    return plant_3_y;
+  } else if(id == 4){
+    return plant_4_y;
+  } else if(id == 5){
+    return plant_5_y;
+  } else if(id == 6){
+    return plant_6_y;
+  } else {
+    //error
+    Serial.print("ERROR, not possible ID value");
+    reset();
+    exit(0);
+  }
+}
+
+void printDebug(char* message, int value){
+  Serial.print(message); // for debug purposes
+  Serial.print(value);
+  Serial.print("\n");
+}
+
 
 void setup() {
   pinMode(X_step_pin, OUTPUT);
@@ -117,10 +282,12 @@ void setup() {
 
 void loop() {
   //Serial.print("Hi\n");
-  if(verbose) Serial.print("\nLoop: \n");
+
+
+   //if(verbose) Serial.print("\nLoop: \n");
 
   /*
-      Communications with ESP Controller (Primary)
+      CommunicationHars with ESP Controller (Primary)
 
       Receive: Plant/Harvest/Other operations, Plant ID
       Formatting (Relevant to Filip probably):
@@ -132,27 +299,28 @@ void loop() {
       Tranmit: Busy/Ready
   */
   
-  while(1){
-  if (Serial.available() > 0) {
+    if (Serial.available() > 0) {
+    //Serial.print("Message recieved\n");
     String receivedMessage = Serial.readStringUntil('\n');
-    if(receivedMessage == prevRecMessage){
-      //break;
-      continue;
-    }
+    // if(receivedMessage == prevRecMessage){
+    //   //break;
+    //   return;
+    // }
     //String receivedMessage = "204,3,harvest";
     // Process the received message
     if (verbose) Serial.print("\nReceived from Esp32: ");
     if (verbose) Serial.println(receivedMessage);
-    esp32Decoder(receivedMessage, &harvest, &plant, &ready, &plantID, &tx_rx_ID);
+    
 
     if(!ready){
-      if (verbose) Serial.write("Busy\n"); // inform esp32 that no instruction will be accepted
+      //Serial.write("Busy\n"); // inform esp32 that no instruction will be accepted
     }
-    if(verbose) printDebug("Harvest ", harvest);
-    if(verbose) printDebug("Plant ", plant);
-    if(verbose) printDebug("Ready ", ready);
-    if(verbose) printDebug("Plant Number ", plantID);
-    if(verbose) printDebug("TX RX IDENTITY ", tx_rx_ID);
+    esp32Decoder(receivedMessage, &harvest, &plant, &ready, &plantID, &tx_rx_ID);
+    // if(verbose) printDebug("Harvest ", harvest);
+    // if(verbose) printDebug("Plant ", plant);
+    // if(verbose) printDebug("Ready ", ready);
+    // if(verbose) printDebug("Plant Number ", plantID);
+    // if(verbose) printDebug("TX RX IDENTITY ", tx_rx_ID);
 
     
     //    Based on comms, translate into position and move 3D gantry
@@ -195,8 +363,11 @@ void loop() {
       // reset flags
       ready = true;
       harvest = false;
+      char ack_command [100];
+      sprintf(ack_command, "Done,%d", tx_rx_ID); 
+      Serial.println(ack_command);
     } else if(plant){
-      if(verbose) Serial.print("Planting in progress \n");
+      //if(verbose) Serial.print("Planting in progress \n");
       
       // go to plant
       stepperY.runToNewPosition(plantIDtoYposition(plantID));
@@ -214,194 +385,28 @@ void loop() {
       // reset flags
       ready = true;
       plant = false;
-    } else {
-      // remain idle
-      if(verbose) Serial.print("No task assigned, saving power \n");
-    }
-
-    if(ready){
       char ack_command [100];
       sprintf(ack_command, "Done,%d", tx_rx_ID); 
       Serial.println(ack_command);
     }
+    else if(receivedMessage.startsWith("DIST")) {
+        scan_for_plant_maturity();
+        ready = true;
+    }
+    else {
+      ready = true;
+    }
+
     
     //if(verbose) delay(300); // 0.3 second delay
     prevRecMessage = receivedMessage;
   }
-    // code to check plant height
-    currentTime = millis(); // in milliseconds
+  delay(1000);
 
-    // is it time yet?
-    if(verbose) Serial.print("\nCurrent: ");
-    if(verbose) Serial.print(currentTime);
-    if(verbose) Serial.print("\nPrevious: ");
-    if(verbose) Serial.print(previousTime);
-    if(verbose) Serial.print("\nScan: ");
-    if(verbose) Serial.print(scanDelay);
-    if(verbose) Serial.print("\nMinus: ");
-    if(verbose) Serial.print(currentTime - previousTime);
-    if(currentTime - previousTime >= scanDelay){
-      // code to scan
-      if(verbose) Serial.print("Gantry Scanning to check for Plant Maturity\n");
-      scan_for_plant_maturity();
-      previousTime = currentTime;
-    }
-  }
+  
 
   //reset();
-  if(verbose) Serial.print("Program Closed\n");
+  //if(verbose) Serial.print("Program Closed\n");
   //exit(0);
-}
 
-void close_claw(){
-  for (pos = 30; pos <= 120; pos += 1) { // goes from 0 degrees to 180 degrees
-    // in steps of 1 degree
-    myservo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(15);                       // waits 15ms for the servo to reach the position
-  }
-  // Ground the signal pin after operation finishes
-  digitalWrite(claw_pin, LOW); // Ground the signal pin
-  delay(1000); 
-}
-
-void open_claw(){
-  for (pos = 120; pos >= 30; pos -= 1) { // goes from 180 degrees to 0 degrees
-    myservo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(15);                       // waits 15ms for the servo to reach the position
-  }
-  // Ground the signal pin after operation finishes
-  digitalWrite(claw_pin, LOW); // Ground the signal pin
-  delay(1000); 
-}
-
-void close_claw_old(){
-  for (pos = 50; pos <= 120; pos += 1) { // goes from 0 degrees to 180 degrees
-    // in steps of 1 degree
-    myservo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(15);                       // waits 15ms for the servo to reach the position
-  }
-}
-
-void open_claw_old(){
-  for (pos = 120; pos >= 50; pos -= 1) { // goes from 180 degrees to 0 degrees
-    myservo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(15);                       // waits 15ms for the servo to reach the position
-  }
-}
-
-void scan_for_plant_maturity() {
-  stepperY.runToNewPosition(plantIDtoYposition(5));
-  stepperX.runToNewPosition(plantIDtoXposition(5));
-  stepperZ.runToNewPosition(plant_z - 500);
-  int d5 = sr04.Distance();
-
-  stepperY.runToNewPosition(plantIDtoYposition(3));
-  stepperX.runToNewPosition(plantIDtoXposition(3));
-  int d3 = sr04.Distance();
-
-  stepperY.runToNewPosition(plantIDtoYposition(1));
-  stepperX.runToNewPosition(plantIDtoXposition(1));
-  int d1 = sr04.Distance();
-
-  stepperY.runToNewPosition(plantIDtoYposition(2));
-  stepperX.runToNewPosition(plantIDtoXposition(2));
-  int d2 = sr04.Distance();
-
-  stepperY.runToNewPosition(plantIDtoYposition(4));
-  stepperX.runToNewPosition(plantIDtoXposition(4));
-  int d4 = sr04.Distance();
-
-  stepperY.runToNewPosition(plantIDtoYposition(6));
-  stepperX.runToNewPosition(plantIDtoXposition(6));
-  int d6 = sr04.Distance();
-
-  stepperX.runToNewPosition(0);
-  stepperY.runToNewPosition(0);
-  stepperZ.runToNewPosition(0);
-
-  // Construct the string
-  //String result = "DIST " + String(d1) + " " + String(d2) + " " + String(d3) + " " + String(d4) + " " + String(d5) + " " + String(d6);
-  
-  // Print or use the result as needed
-  //Serial.println(result);
-}
-
-
-void reset (){
-  stepperZ.runToNewPosition(0);
-  stepperX.runToNewPosition(0);
-  stepperY.runToNewPosition(0);
-}
-
-void esp32Decoder(String data, bool* harvest, bool* plant, bool* status, int* id, int* tx_rx_id){
-  int commaIndex, secondCommaIndex = 0;
-  commaIndex = data.indexOf(',');
-  secondCommaIndex = data.indexOf(',', commaIndex + 1);
-  String comm_id = data.substring(0, commaIndex); // parse first word and remove whitespace
-  if(verbose) Serial.print("\nComm Id: ");
-  if(verbose) Serial.println(comm_id);
-  *tx_rx_id = comm_id.toInt();
-  if(verbose) Serial.println(*tx_rx_id);
-  String number = data.substring(commaIndex+1, secondCommaIndex); // parse plant number
-  number.trim();
-  *id = number.toInt();
-  String operation = data.substring(secondCommaIndex + 1); // parse last word and remove whitespace
-  operation.trim();
-
-  if(operation == "Harvest" && *status == true){
-    *harvest = true;
-    *status = false;
-  } else if(operation == "plant" && *status == true){
-    *plant = true;
-    *status = false;
-  }
-
-}
-
-int plantIDtoXposition(int id){
-  if(id == 1){
-    return plant_1_x;
-  } else if(id == 2){
-    return plant_2_x;
-  } else if(id == 3){
-    return plant_3_x;
-  } else if(id == 4){
-    return plant_4_x;
-  } else if(id == 5){
-    return plant_5_x;
-  } else if(id == 6){
-    return plant_6_x;
-  } else {
-    //error
-    Serial.print("ERROR, not possible ID value");
-    reset();
-    exit(0);
-  }
-}
-
-int plantIDtoYposition(int id){
-  if(id == 1){
-    return plant_1_y;
-  } else if(id == 2){
-    return plant_2_y;
-  } else if(id == 3){
-    return plant_3_y;
-  } else if(id == 4){
-    return plant_4_y;
-  } else if(id == 5){
-    return plant_5_y;
-  } else if(id == 6){
-    return plant_6_y;
-  } else {
-    //error
-    Serial.print("ERROR, not possible ID value");
-    reset();
-    exit(0);
-  }
-}
-
-void printDebug(char* message, int value){
-  Serial.print(message); // for debug purposes
-  Serial.print(value);
-  Serial.print("\n");
 }
